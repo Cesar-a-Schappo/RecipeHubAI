@@ -1,0 +1,26 @@
+package dev.cesar.RecipeHubAI.Controller;
+
+import dev.cesar.RecipeHubAI.Service.GeminiService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+
+@RestController
+public class RecipeController {
+
+    private GeminiService geminiService;
+
+    public RecipeController() {
+    }
+
+    public RecipeController(GeminiService geminiService) {
+        this.geminiService = geminiService;
+    }
+
+    @GetMapping
+    public Mono<ResponseEntity<String>> generateRecipe() {
+        return geminiService.generateRecipe();
+    }
+
+}
