@@ -11,16 +11,15 @@ public class RecipeController {
 
     private GeminiService geminiService;
 
-    public RecipeController() {
-    }
-
     public RecipeController(GeminiService geminiService) {
         this.geminiService = geminiService;
     }
 
-    @GetMapping
+    @GetMapping("/generate")
     public Mono<ResponseEntity<String>> generateRecipe() {
-        return geminiService.generateRecipe();
+        return geminiService.generateRecipe()
+                .map(recipe -> ResponseEntity.ok(recipe))
+                .defaultIfEmpty(ResponseEntity.noContent().build());
     }
 
 }
