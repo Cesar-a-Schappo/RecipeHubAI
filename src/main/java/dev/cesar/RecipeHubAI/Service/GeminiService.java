@@ -1,5 +1,6 @@
 package dev.cesar.RecipeHubAI.Service;
 
+import dev.cesar.RecipeHubAI.Model.FoodItem;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class GeminiService {
@@ -20,9 +22,14 @@ public class GeminiService {
 
     private final String apiKey = System.getenv("API_KEY");
 
-    public Mono<String> generateRecipe() {
+    public Mono<String> generateRecipe(List<FoodItem> foodItems) {
 
-        String prompt = "You're a chef now! Return your top 5 recipes.";
+        String ingredients = foodItems.stream()
+                .map(item -> String.format("%s (%s) - Quantity: %d, Expiration date: %s",
+                        item.getName(), item.getFoodCategory(), item.getQuantity(), item.getExpirationDate()))
+                .collect(Collectors.joining("\n"));
+
+        String prompt = "Based on my data base, return a recipe with the following ingredients:\n" + ingredients;
 
         Map<String, Object> requestBody = Map.of(
                 "contents", List.of(
